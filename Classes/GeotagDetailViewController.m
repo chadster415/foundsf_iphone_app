@@ -23,10 +23,7 @@
 @synthesize imageurl;
 @synthesize pageid;
 
-- (IBAction) sendCoords:(id)sender {
-	//UIButton *resultButton = (UIButton *)sender;
-	//NSString *btnTitle = resultButton.currentTitle;
-	
+- (IBAction) sendCoords:(id)sender {	
 	NSString *btnTitle = self.geotagButton.currentTitle;
 	NSLog(@" The button's title is %@.", btnTitle);
 	NSLog(@" The district should be %@.", self.title);
@@ -58,6 +55,22 @@
 	DistrictImage *imageObj  = [self.apiAccessor getDistrictImage:self.title];
 	NSLog(@"Refresh image url: %@", imageObj.imageurl);
 	NSLog(@"Refresh pageid: %i", imageObj.pageid);
+    
+    
+    if (imageObj.imageurl == NULL || [imageObj.imageurl isEqualToString:@"" ]){
+        //hide all the buttons and return
+        self.infoButton.hidden = YES;
+        self.geotagButton.hidden = YES;
+        self.refreshButton.hidden = YES;
+        self.textLabel.hidden = YES;
+        return;
+    } else {
+        //show all the buttons
+        self.infoButton.hidden = NO;
+        self.geotagButton.hidden = NO;
+        self.refreshButton.hidden = NO;
+        self.textLabel.hidden = NO;
+    }
 	
 	NSURL *url = [NSURL URLWithString:imageObj.imageurl];	
 	NSData *data = [NSData dataWithContentsOfURL:url];	
@@ -75,7 +88,6 @@
     self.imageurl = imageObj.imageurl;
 	
 	[urlImage release];	
-	[imageObj release];
 	
 	[self.geotagButton setTitle:@"Geotag This!" forState:UIControlStateNormal];
 }

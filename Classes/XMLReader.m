@@ -22,7 +22,8 @@ NSString *const kXMLReaderTextNodeKey = @"text";
 
 // Sets the apiResponse property to a ApiResponse object passed in 
 - (id)initWithApiResponse:(ApiResponse *)myApiResponse{
-    if (self = [super init]) {
+    self = [super init];
+    if (self) {
 		[self setApiResponse:(ApiResponse *)myApiResponse];
     }
     
@@ -34,7 +35,9 @@ NSString *const kXMLReaderTextNodeKey = @"text";
     NSURL *url = [[NSURL alloc] initWithString:apiUrl];
 	NSError* error;
 	NSString* urlContents = [NSString stringWithContentsOfURL:url encoding:NSASCIIStringEncoding error:&error];
-	
+    
+    [url release]; //added this here
+    
 	if (urlContents){
 		
 		// Parse the XML into a dictionary
@@ -48,8 +51,11 @@ NSString *const kXMLReaderTextNodeKey = @"text";
 		
 		return YES;
 	} else {
+        //create empty dictionary
+        NSDictionary *xmlDictionary = [NSDictionary dictionary];
+		apiResponse.apiDict = xmlDictionary;
 		return NO;
-	}	
+	}
 	
 }
 
@@ -72,7 +78,8 @@ NSString *const kXMLReaderTextNodeKey = @"text";
 
 - (id)initWithError:(NSError **)error
 {
-    if (self = [super init])
+    self = [super init];
+    if (self)
     {
         errorPointer = error;
     }
@@ -95,6 +102,7 @@ NSString *const kXMLReaderTextNodeKey = @"text";
     NSXMLParser *parser = [[NSXMLParser alloc] initWithData:data];
     parser.delegate = self;
     BOOL success = [parser parse];
+    [parser release];
     
     // Return the stack’s root dictionary on success
     if (success)
@@ -166,7 +174,7 @@ NSString *const kXMLReaderTextNodeKey = @"text";
         [textInProgress release];
         textInProgress = [[NSMutableString alloc] init];
     }
-    
+        
     // Pop the current dict
     [dictionaryStack removeLastObject];
 }

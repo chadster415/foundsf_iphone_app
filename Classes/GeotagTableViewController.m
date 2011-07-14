@@ -43,34 +43,6 @@
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
 }
 
-/*
-- (void)viewWillAppear:(BOOL)animated {
-    [super viewWillAppear:animated];
-}
-*/
-/*
-- (void)viewDidAppear:(BOOL)animated {
-    [super viewDidAppear:animated];
-}
-*/
-/*
-- (void)viewWillDisappear:(BOOL)animated {
-    [super viewWillDisappear:animated];
-}
-*/
-/*
-- (void)viewDidDisappear:(BOOL)animated {
-    [super viewDidDisappear:animated];
-}
-*/
-/*
-// Override to allow orientations other than the default portrait orientation.
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
-    // Return YES for supported orientations
-    return (interfaceOrientation == UIInterfaceOrientationPortrait);
-}
-*/
-
 
 #pragma mark -
 #pragma mark Table view data source
@@ -115,16 +87,7 @@
     [self tableView:tableView didSelectRowAtIndexPath:indexPath];
 }
 
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    // Navigation logic may go here. Create and push another view controller.
-	/*
-	 <#DetailViewController#> *detailViewController = [[<#DetailViewController#> alloc] initWithNibName:@"<#Nib name#>" bundle:nil];
-     // ...
-     // Pass the selected object to the new view controller.
-	 [self.navigationController pushViewController:detailViewController animated:YES];
-	 [detailViewController release];
-	 */
-	
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {	
 
 	NSInteger row = [indexPath row];
 	if (self.geotagDetailViewController == nil){
@@ -147,13 +110,27 @@
 	
 	//set image in detailView
 	NSLog(@"PATH is: %@", imageObj.imageurl);
-	NSLog(@"IMAGEURL is: %@", imageObj.imageurl);
+	NSLog(@"IMAGEURL is: ||%@||", imageObj.imageurl);
 	NSLog(@"PAGEID is: %i", imageObj.pageid);
+    
+    if (imageObj.imageurl == NULL || [imageObj.imageurl isEqualToString:@"" ]){
+        //hide all the buttons and return
+        self.geotagDetailViewController.infoButton.hidden = YES;
+        self.geotagDetailViewController.geotagButton.hidden = YES;
+        self.geotagDetailViewController.refreshButton.hidden = YES;
+        self.geotagDetailViewController.textLabel.hidden = YES;
+        self.geotagDetailViewController.imageView.image = nil;
+        return;
+    } else {
+        //show all the buttons
+        self.geotagDetailViewController.infoButton.hidden = NO;
+        self.geotagDetailViewController.geotagButton.hidden = NO;
+        self.geotagDetailViewController.refreshButton.hidden = NO;
+        self.geotagDetailViewController.textLabel.hidden = NO;
+    }
 
 	NSURL *url = [NSURL URLWithString:imageObj.imageurl];
-
 	NSData *data = [NSData dataWithContentsOfURL:url];
-
 	UIImage *urlImage = [[UIImage alloc] initWithData:data];
 
 	self.geotagDetailViewController.imageView.image = urlImage;
@@ -163,12 +140,13 @@
     NSLog(@"String: %@", imageObj.imagetext);
     self.geotagDetailViewController.textLabel.hidden = YES;
     if ([imageObj.imagetext isEqualToString:@"Not found"]){
+        //if there is no comment for the image, set the comment to the image's url only
         self.geotagDetailViewController.textLabel.text = imageObj.imageurl;
     } else {
+        //else set the comment to the comment plus the image's url
         self.geotagDetailViewController.textLabel.text = [[NSArray arrayWithObjects:imageObj.imagetext, imageObj.imageurl, nil] componentsJoinedByString:@"\n\n"];
     }
     
-	[imageObj release];
 	[urlImage release];
 
 }

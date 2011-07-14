@@ -53,9 +53,13 @@
 	//TODO: change it so you don't have to pass username stuff into getUserscore, that method gets usernames directly out of NSUserDefaults
 	//set usernameText to NSUserDefaults last username
 	self.usernameText.text = [self.apiAccessor getCurrentlyStoredUsername];
-	NSMutableString *labelText = [[NSMutableString alloc] initWithString:[self.apiAccessor getUserScore]];
-	//[labelText appendString:];
-	[labelText appendString:@" images geotagged"];
+    
+    NSString *score = [self.apiAccessor getUserScore];
+    if (score == nil){ score = @"0"; }
+        
+    NSMutableString *labelText = [[NSMutableString alloc] initWithString:@"Score: " ];
+	
+    [labelText appendString:score];
 	self.usernameLabel.text = labelText;
     
     if (latdouble != 0 && longdouble != 0){
@@ -69,6 +73,8 @@
     } else {
         self.districtLabel.text = @"<press button below to calculate>";
     }
+    
+    [labelText release];
 }
 
 - (IBAction) refreshDistrictLabel: (id) sender {
@@ -111,10 +117,12 @@
 	}	
     
     NSLog(@"Textfield length is: %i", [textField.text length]);
+    NSString *textFieldText = [textField.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet] ];
     
-    if ([[textField.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet] ] isEqualToString: @""]) {
+    if ([textFieldText isEqualToString: @""]) {
         NSLog(@"returning YES");
         [textField resignFirstResponder];
+        [textFieldText release];
         return YES;
     } else {    
 	
@@ -135,9 +143,9 @@
         
             //display that number in the label under the username textbox
             NSLog(@"Success == True");
-            NSMutableString *labelText = [[NSMutableString alloc] initWithString:usercount];
+            NSMutableString *labelText = [[NSMutableString alloc] initWithString:@"Score: "];
             //[labelText appendString:usercount];
-            [labelText appendString:@" images geotagged"];
+            [labelText appendString:usercount];
             
             usernameLabel.text = labelText;
             cancelButton.hidden = TRUE;

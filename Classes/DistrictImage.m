@@ -14,4 +14,11 @@
 @synthesize imageurl;
 @synthesize imagetext;
 
+- (void)dealloc
+{
+    [imageurl release];
+    [imagetext release];    
+    [super dealloc];
+}
+
 @end

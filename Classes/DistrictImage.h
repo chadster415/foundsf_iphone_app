@@ -15,7 +15,7 @@
 	NSString *imagetext;
 }
 
-@property (nonatomic) NSInteger pageid;
+@property (nonatomic, assign) NSInteger pageid;
 @property (nonatomic, retain) NSString *imageurl;
 @property (nonatomic, retain) NSString *imagetext;
 

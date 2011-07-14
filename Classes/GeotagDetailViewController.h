@@ -37,9 +37,9 @@
 @property (nonatomic, retain) UIButton *refreshButton;
 @property (nonatomic, retain) UIButton *infoButton;
 @property (nonatomic, retain) UILabel *textLabel;
-@property (nonatomic, assign) CLLocationManager *lm;
+@property (nonatomic, retain) CLLocationManager *lm;
 @property (nonatomic, retain) APIAccessor *apiAccessor;
-@property (nonatomic, assign) NSString * imageurl;
+@property (nonatomic, retain) NSString * imageurl;
 @property (nonatomic, assign) NSInteger pageid;
 
 - (IBAction) sendCoords:(id)sender;

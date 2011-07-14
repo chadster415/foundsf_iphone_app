@@ -42,15 +42,15 @@
 	NSLog(@"Url is %@", apiUrl);
 	[parser parse:apiUrl];
 	
-	obj.imageurl = [self trimString:[[[apiResponse.apiDict objectForKey:RESPONSE] objectForKey:IMAGEURL] objectForKey:TEXT]];
 	NSString *pageidstring = [self trimString:[[[apiResponse.apiDict objectForKey:RESPONSE] objectForKey:PAGEID] objectForKey:TEXT]];
     obj.pageid = [pageidstring integerValue];
-	obj.imageurl = (NSString *)[self trimString:[[[apiResponse.apiDict objectForKey:RESPONSE] objectForKey:IMAGEURL] objectForKey:TEXT]];
+	obj.imageurl = [self trimString:[[[apiResponse.apiDict objectForKey:RESPONSE] objectForKey:IMAGEURL] objectForKey:TEXT]];
 	obj.imagetext = [self trimString:[[[apiResponse.apiDict objectForKey:RESPONSE] objectForKey:IMAGETEXT] objectForKey:TEXT]];
 	
 	[parser release];
-	[apiResponse release];
+	[apiResponse release];    
 	
+    [obj autorelease];
 	return obj;
 	
 }
@@ -161,6 +161,9 @@
 
     } else {
     
+        [parser release];
+        [apiResponse release];
+        
         return @"No";
         
     }
@@ -179,18 +182,28 @@
         
         NSLog(@"Api call is %@", apiUrl);
         [parser parse:apiUrl];
+        [apiUrl release];
+        
         
         NSObject *neighborhood = [[[apiResponse.apiDict objectForKey:RESULT] objectForKey:NEIGHBORHOODS] objectForKey:NEIGHBORHOOD];
+        
         NSDictionary *neighborhoodElement;
         if ([neighborhood isKindOfClass:[NSDictionary class]]) {
             neighborhoodElement = (NSDictionary *)neighborhood;
         } else if ([neighborhood isKindOfClass:[NSArray class]]) {
             neighborhoodElement = [(NSArray *)neighborhood objectAtIndex: 0];
-        }	 
+        } else { //api was empty
+            neighborhoodElement = nil;
+        }
         
         NSLog(@"NeighborhoodElement: %@", neighborhoodElement);
         
-        NSString *neighborhoodString = [self trimString:[[neighborhoodElement objectForKey:NAME] objectForKey:TEXT]];
+        NSString *neighborhoodString = @"";
+        if (neighborhoodElement != nil){
+            neighborhoodString = [self trimString:[[neighborhoodElement objectForKey:NAME] objectForKey:TEXT]];
+        } else {
+            neighborhoodString = @"Not found";
+        }
         
         NSLog(@"Neighborhood: %@", neighborhoodString);
         
@@ -228,6 +241,10 @@
 		NSLog(@"%@",score);
 		[scoreDict setObject:score forKey:username];
 	}
+    
+    [parser release];
+    [apiResponse release];
+    [scoreDict autorelease];
 		
 	return scoreDict;
 }
@@ -291,7 +308,7 @@
 	}
 	if (req.pastusernames != nil){
 		[url appendString:[self getQSDelimiter:firstElement]];
-		firstElement = FALSE;		
+		//firstElement = FALSE;		
 		[url appendString:@"past="];
 		[url appendString:req.pastusernames];
 	}
@@ -309,7 +326,9 @@
 	//TODO: where do I [release] the url? 
 	
 	//NSLog(@"Concatenated url is: %@", url);
-	 
+	
+    [url autorelease];
+    
 	return url;
 	
 }
@@ -338,6 +357,7 @@
 		[usernameString appendString:(NSString *)object];
 	}
 	NSLog(@"username string is: %@", usernameString);
+    [usernameString autorelease];
 	return usernameString;
 }
 
@@ -362,13 +382,16 @@
 	[mutableUsernames addObject:username];
 	//set usernames back on NSUserDefaults
 	[myDefaults setObject:mutableUsernames forKey:USERNAMES];
+    
+    [mutableUsernames autorelease];
 	
 }
 
 - (NSString *)trimString: (NSString *)value {
 	
-	value = (NSMutableString *)[value stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-	return value;
+	NSString *newValue = (NSMutableString *)[value stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+    
+    return newValue;
 }
 
 - (void) dealloc{

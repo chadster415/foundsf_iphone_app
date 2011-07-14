@@ -22,8 +22,8 @@
 	NSString *pastusernames;
 }
 
-@property (nonatomic, assign) NSString *endpoint; 
-@property (nonatomic, assign) NSString *username; 
+@property (nonatomic, retain) NSString *endpoint; 
+@property (nonatomic, retain) NSString *username; 
 @property (nonatomic, retain) NSString *op;
 @property (nonatomic, retain) NSString *hood;
 @property (nonatomic, retain) NSString *imageurl;
