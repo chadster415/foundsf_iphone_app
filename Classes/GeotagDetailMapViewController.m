@@ -94,17 +94,8 @@
 	[[NSNotificationCenter defaultCenter] removeObserver:self name:@"DDAnnotationCoordinateDidChangeNotification" object:nil];	
 }
 
-- (void)viewDidUnload {
-	// Release any retained subviews of the main view.
-	// e.g. self.myOutlet = nil;
-	
-	//self.mapView.delegate = nil;
-	//self.mapView = nil;
-}
-
 - (void)dealloc {
 	mapView.delegate = nil;
-//	[mapView release];
     [dismissViewButton release];
     [super dealloc];
 }

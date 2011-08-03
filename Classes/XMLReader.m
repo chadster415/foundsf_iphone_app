@@ -47,7 +47,7 @@ NSString *const kXMLReaderTextNodeKey = @"text";
 		apiResponse.apiDict = xmlDictionary;
 		
 		// Print the dictionary
-		NSLog(@"%@", xmlDictionary);
+		DLog(@"%@", xmlDictionary);
 		
 		return YES;
 	} else {

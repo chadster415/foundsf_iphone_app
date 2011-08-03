@@ -39,7 +39,7 @@
     apiRequest.username = [self getCurrentlyStoredUsername];
 	
 	NSString *apiUrl = [self getApiUrl: apiRequest];
-	NSLog(@"Url is %@", apiUrl);
+	DLog(@"Url is %@", apiUrl);
 	[parser parse:apiUrl];
 	
 	NSString *pageidstring = [self trimString:[[[apiResponse.apiDict objectForKey:RESPONSE] objectForKey:PAGEID] objectForKey:TEXT]];

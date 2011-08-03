@@ -45,51 +45,61 @@
 }
 
 - (IBAction) refreshImage:(id)sender {
-    //if the geotag button's label is "Geotag this!", the user wants to skip
+    //if the geotag button's label is still "Geotag this!", the user wants to skip
     NSString *btnTitle = self.geotagButton.currentTitle;
     if ([btnTitle isEqualToString:@"Geotag This!"]){
        [self skipImage: sender]; 
     }    
-    
-    //now just refresh image the image as usual
-	DistrictImage *imageObj  = [self.apiAccessor getDistrictImage:self.title];
-	NSLog(@"Refresh image url: %@", imageObj.imageurl);
-	NSLog(@"Refresh pageid: %i", imageObj.pageid);
-    
+    [self setNewImageOnView: self.title];
+}
+
+- (void) setNewImageOnView: (NSString *) district {
+    //now just refresh the image as usual
+	DistrictImage *imageObj  = [self.apiAccessor getDistrictImage:district];
+	
+    DLog(@"PATH is: %@", imageObj.imageurl);
+	DLog(@"IMAGEURL is: ||%@||", imageObj.imageurl);
+	DLog(@"PAGEID is: %i", imageObj.pageid);
     
     if (imageObj.imageurl == NULL || [imageObj.imageurl isEqualToString:@"" ]){
         //hide all the buttons and return
-        self.infoButton.hidden = YES;
-        self.geotagButton.hidden = YES;
-        self.refreshButton.hidden = YES;
-        self.textLabel.hidden = YES;
+        [self hideImageButtons:YES];
+        self.imageView.image = nil;
         return;
     } else {
-        //show all the buttons
-        self.infoButton.hidden = NO;
-        self.geotagButton.hidden = NO;
-        self.refreshButton.hidden = NO;
-        self.textLabel.hidden = NO;
+        //do not hide the buttons
+        [self hideImageButtons:NO];
     }
 	
 	NSURL *url = [NSURL URLWithString:imageObj.imageurl];	
 	NSData *data = [NSData dataWithContentsOfURL:url];	
 	UIImage *urlImage = [[UIImage alloc] initWithData:data];
-	self.imageView.image = urlImage;
+	
+    self.imageView.image = urlImage;
 	self.pageid = imageObj.pageid;
-    NSLog(@"String: %@", imageObj.imagetext);
+    self.imageurl = imageObj.imageurl;
+    
+    DLog(@"String: %@", imageObj.imagetext);
     
     self.textLabel.hidden = YES;
     if ([imageObj.imagetext isEqualToString:@"Not found"]){
+        //if there is no comment for the image, set the comment to the image's url only
         self.textLabel.text = imageObj.imageurl;
     } else {
+        //else set the comment to the comment plus the image's url
         self.textLabel.text = [[NSArray arrayWithObjects:imageObj.imagetext, imageObj.imageurl, nil] componentsJoinedByString:@"\n\n"];
     }
-    self.imageurl = imageObj.imageurl;
-	
+    	
 	[urlImage release];	
 	
 	[self.geotagButton setTitle:@"Geotag This!" forState:UIControlStateNormal];
+}
+
+- (void) hideImageButtons: (BOOL) blnShow {
+    self.infoButton.hidden = blnShow;
+    self.geotagButton.hidden = blnShow;
+    self.refreshButton.hidden = blnShow;
+    self.textLabel.hidden = blnShow;
 }
 
 - (IBAction) addManualCoords:(id)sender {

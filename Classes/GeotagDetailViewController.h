@@ -47,6 +47,8 @@
 - (IBAction) addManualCoords:(id)sender;
 - (IBAction) toggleInfo:(id)sender;
 - (void) skipImage:(id)sender;
+- (void) hideImageButtons: (BOOL) blnShow;
+- (void) setNewImageOnView: (NSString *) district;
 
 
 @end
